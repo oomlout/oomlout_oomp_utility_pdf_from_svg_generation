@@ -70,20 +70,25 @@ def generate(**kwargs):
             pass
 
 def test_for_inkscape():
+    import subprocess
+    string_exec = f"inkscape --version"
+    #store the output to a string
     try:
-        string_exec = f"inkscape --version"
-        os.system(string_exec)
+        subprocess.check_output(string_exec, shell=True)
     except:
         string_exec = f"sudo apt-get update"
         os.system(string_exec)
-        string_exec = f"sudo apt-get install inkscape"
+        string_exec = f"sudo apt-get install -y inkscape"
         os.system(string_exec)
+        #test again
+        string_exec = f"inkscape --version"
         try:
-            string_exec = f"inkscape --version"
-            os.system(string_exec)
-        except:
+            output = subprocess.check_output(string_exec, shell=True)
+        except:        
             print("inkscape not found, please install inkscape and add to path")
             exit()
+    pass
+
 
 if __name__ == '__main__':
     #folder is the path it was launched from
