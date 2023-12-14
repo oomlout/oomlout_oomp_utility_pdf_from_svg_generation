@@ -59,7 +59,13 @@ def generate(**kwargs):
             file_input = os.path.join(directory, file)
             file_output = file_input.replace(".svg", ".pdf")
             if overwrite or not os.path.exists(file_output):
-                string_exec = f"inkscape --export-type=pdf --export-filename={file_output} {file_input}"
+                #if running on windows
+                if os.name == 'nt':
+                    string_exec = f"inkscape --export-type=pdf --export-filename={file_output} {file_input}"
+                else:
+                    #use the older 0.92 version of the export command
+                    #string_exec = f"echo -e '{file_input}\nexport pdf {file_output}\nquit' | inkscape --shell"
+                    string_exec = ""
                 #print(string_exec)
                 print(f"Converting {file_input} to {file_output}")
                 os.system(string_exec)
