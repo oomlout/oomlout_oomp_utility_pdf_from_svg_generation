@@ -16,6 +16,8 @@ with open(file_configuration, 'r') as stream:
 
 
 def main(**kwargs):
+
+    test_for_inkscape()
     
     
     folder = kwargs.get("folder", f"os.path.dirname(__file__)/parts")
@@ -66,7 +68,21 @@ def generate(**kwargs):
             
             pass
 
-    
+def test_for_inkscape():
+    try:
+        string_exec = f"inkscape --version"
+        os.system(string_exec)
+    except:
+        string_exec = f"sudo apt-get update"
+        os.system(string_exec)
+        string_exec = f"sudo apt-get install inkscape"
+        os.system(string_exec)
+        try:
+            string_exec = f"inkscape --version"
+            os.system(string_exec)
+        except:
+            print("inkscape not found, please install inkscape and add to path")
+            exit()
 
 if __name__ == '__main__':
     #folder is the path it was launched from
