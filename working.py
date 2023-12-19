@@ -49,7 +49,41 @@ def create(**kwargs):
     generate(**kwargs)
     
 
+
+def convert_file(file):
+    directory = os.getcwd()
+    overwrite = False
+    file_input = os.path.join(directory, file)
+    file_output = file_input.replace(".svg", ".pdf")
+    if overwrite or not os.path.exists(file_output):
+        if os.name == 'nt':
+            string_exec = f"inkscape --export-type=pdf --export-filename={file_output} {file_input}"
+        else:
+            string_exec = ""
+        #print(f"Converting {file_input} to {file_output}")
+        os.system(string_exec)
+    else:
+        print(f"Skipping {file_input} to {file_output}")
+
 def generate(**kwargs):
+    directory = kwargs.get("directory", os.getcwd())
+    overwrite = kwargs.get("overwrite", False)
+    files = [file for file in os.listdir(directory) if file.endswith(".svg")]
+
+    import multiprocessing
+    import time
+    time_start = time.time()
+    file_count = 0
+    with multiprocessing.Pool(4) as p:                
+        p.map(convert_file, files)
+        #print current average time per file
+        file_count += len(files)
+        time_end = time.time()
+        time_elapsed = time_end - time_start
+        time_per_file = time_elapsed / file_count
+        print(f"Time per file: {time_per_file}")
+
+def generate_old(**kwargs):
     import os
     directory = kwargs.get("directory",os.getcwd())   
     overwrite = kwargs.get("overwrite", False) 
@@ -68,6 +102,7 @@ def generate(**kwargs):
                     string_exec = ""
                 #print(string_exec)
                 print(f"Converting {file_input} to {file_output}")
+
                 os.system(string_exec)
             else:
                 print(f"Skipping {file_input} to {file_output}")
@@ -102,7 +137,7 @@ if __name__ == '__main__':
     kwargs = {}
     folder = os.path.dirname(__file__)
     #folder = "C:/gh/oomlout_oomp_builder/parts"
-    #folder = "C:/gh/oomlout_oomp_part_generation_version_1/parts"
+    folder = "C:/gh/oomlout_oomp_part_generation_version_1/parts"
     kwargs["folder"] = folder
     overwrite = False
     kwargs["overwrite"] = overwrite
