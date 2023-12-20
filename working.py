@@ -23,8 +23,9 @@ def main(**kwargs):
     workers  = 4
     if overwrite:
         workers = 1
-    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
-        executor.submit(main, **kwargs)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        for _ in range(4):
+            executor.submit(main, **kwargs)
 
 def main_thread(**kwargs):
 
