@@ -102,8 +102,15 @@ if __name__ == '__main__':
     kwargs = {}
     folder = os.path.dirname(__file__)
     #folder = "C:/gh/oomlout_oomp_builder/parts"
-    #folder = "C:/gh/oomlout_oomp_part_generation_version_1/parts"
+    folder = "C:/gh/oomlout_oomp_part_generation_version_1/parts"
     kwargs["folder"] = folder
     overwrite = False
     kwargs["overwrite"] = overwrite
-    main(**kwargs)
+    #run main using 4 threads
+    import concurrent.futures
+    workers  = 4
+    if overwrite:
+        workers = 1
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+        executor.submit(main, **kwargs)
+    
