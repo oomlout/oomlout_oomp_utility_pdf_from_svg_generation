@@ -16,7 +16,17 @@ with open(file_configuration, 'r') as stream:
         print(exc)
 
 
+
 def main(**kwargs):
+    overwrite = kwargs.get("overwrite", False)
+    import concurrent.futures
+    workers  = 4
+    if overwrite:
+        workers = 1
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+        executor.submit(main, **kwargs)
+
+def main_thread(**kwargs):
 
     test_for_inkscape()
     
@@ -107,10 +117,5 @@ if __name__ == '__main__':
     overwrite = False
     kwargs["overwrite"] = overwrite
     #run main using 4 threads
-    import concurrent.futures
-    workers  = 4
-    if overwrite:
-        workers = 1
-    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
-        executor.submit(main, **kwargs)
+    
     
